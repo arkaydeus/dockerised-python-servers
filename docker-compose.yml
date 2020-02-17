@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+  py-flask:
+    image: python:3-stretch
+    command: sh -c "
+      pip install -r ./requirements.txt
+      && python -m server"
+    environment:
+      - PORT=9000
+      - FLASK_ENV=development
+    ports:
+      - "9000:9000"
+    working_dir: /root/src
+    volumes:
+      - .:/root
+
+  py-gunicorn:
+    image: python:3-stretch
+    command: sh -c "
+      pip install -r ./requirements.txt
+      && gunicorn --config ./server/gunicorn_config.py server:app"
+    ports:
+      - "8000:8000"
+    working_dir: /root/src
+    volumes:
+      - ./:/root
